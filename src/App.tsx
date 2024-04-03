@@ -13,6 +13,10 @@ const App = () => {
     (letter) => !wordToGuess.includes(letter)
   );
 
+  function getWord() {
+    return words[Math.floor(Math.random() * words.length)];
+  }
+
   const isLoser = incorrectLetters.length >= 6;
   const isWinner = wordToGuess
     .split("")
@@ -44,8 +48,25 @@ const App = () => {
     };
   }, [guessedLetters]);
 
-  if(isLoser) toast.error("Better luck on next refresh");
-  if(isWinner) toast.success("Nice! Refresh to play again");
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const key = e.key;
+      if (key !== "Enter") return;
+
+      e.preventDefault()
+      setGuessedLetters([])
+      setWordToGuess(getWord());
+    };
+
+    document.addEventListener("keypress", handler);
+
+    return () => {
+      document.removeEventListener("keypress", handler);
+    };
+  }, []);
+
+  if (isLoser) toast.error("Poor try, 'Enter' to lose again");
+  if (isWinner) toast.success("Nice! Press 'Enter' to play again");
   return (
     <div
       style={{
@@ -59,7 +80,11 @@ const App = () => {
     >
       <Toaster />
       <HangmanDrawing numberOfGuesses={incorrectLetters.length} />
-      <HangmanWord reveal={isLoser} guessedLetters={guessedLetters} wordToGuess={wordToGuess} />
+      <HangmanWord
+        reveal={isLoser}
+        guessedLetters={guessedLetters}
+        wordToGuess={wordToGuess}
+      />
       <div style={{ alignSelf: "stretch" }}>
         <Keyboard
           activeLetters={guessedLetters.filter((letter) =>
