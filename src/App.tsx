@@ -13,12 +13,17 @@ const App = () => {
     (letter) => !wordToGuess.includes(letter)
   );
 
+  const isLoser = incorrectLetters.length >= 6;
+  const isWinner = wordToGuess
+    .split("")
+    .every((letter) => guessedLetters.includes(letter));
+
   const addGuessedLetter = useCallback(
     (letter: string) => {
-      if (guessedLetters.includes(letter)) return;
+      if (guessedLetters.includes(letter) || isLoser || isWinner) return;
       setGuessedLetters((currentLetters) => [...currentLetters, letter]);
     },
-    [guessedLetters]
+    [guessedLetters, isLoser, isWinner]
   );
 
   useEffect(() => {
@@ -38,6 +43,9 @@ const App = () => {
       document.removeEventListener("keypress", handler);
     };
   }, [guessedLetters]);
+
+  if(isLoser) toast.error("Better luck on next refresh");
+  if(isWinner) toast.success("Nice! Refresh to play again");
   return (
     <div
       style={{
@@ -59,6 +67,7 @@ const App = () => {
           )}
           inactiveLetters={incorrectLetters}
           addGuessedLetter={addGuessedLetter}
+          disabled={isLoser || isWinner}
         />
       </div>
     </div>
