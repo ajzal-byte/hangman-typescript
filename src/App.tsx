@@ -53,8 +53,8 @@ const App = () => {
       const key = e.key;
       if (key !== "Enter") return;
 
-      e.preventDefault()
-      setGuessedLetters([])
+      e.preventDefault();
+      setGuessedLetters([]);
       setWordToGuess(getWord());
     };
 
@@ -65,8 +65,10 @@ const App = () => {
     };
   }, []);
 
-  if (isLoser) toast.error("Poor try, 'Enter' to lose again");
-  if (isWinner) toast.success("Nice! Press 'Enter' to play again");
+  useEffect(() => {
+    if (isLoser) toast.error("Poor try, 'Enter' to lose again");
+    if (isWinner) toast.success("Nice! Press 'Enter' to play again");
+  }, [isLoser, isWinner]);
   return (
     <div
       style={{
