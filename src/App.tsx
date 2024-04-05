@@ -66,7 +66,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (isLoser) toast.error("Poor try, 'Enter' to lose again");
+    if (isLoser) toast.error("You died, Click 'Enter' to die again");
     if (isWinner) toast.success("Nice! Press 'Enter' to play again");
   }, [isLoser, isWinner]);
   return (
